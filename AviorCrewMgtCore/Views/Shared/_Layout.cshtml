@@ -4,103 +4,65 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Aviorcrewing Management Systems</title>
+    <title>@ViewData["Title"] - WebApplication1</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
-
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
-
-    <!-- qTip -->
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/qtip2/3.0.3/jquery.qtip.min.css" />
-
 </head>
 <body style="background-color:#d5e9f8; margin-top:0">
     <div style="margin-top:0; background-color:#e4e7e9">
         <img src="~/images/logo_header.jpg" alt="avior-logo-small" height:80px" />
     </div>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="margin-bottom:0; background-color:#428bca; border-radius:0px">
+            <div class="container">
+                
+                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                    <partial name="_LoginPartial" />
+                    <ul class="navbar-nav flex-grow-1">
 
-    <div class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="margin-bottom:0; background-color:#428bca; border-radius:0px">
-        <div class="custom-container">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            var UserRoles = "";
+                            if (@User.IsInRole("Admin"))
+                            {
+                                UserRoles = "Admin";
+                            }
+                            else
+                            {
+                                UserRoles = "Manager";
+                            }
 
-            <div class="navbar-collapse collapse ">
-                <partial name="_LoginPartial" />
-                <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        var UserRoles = "";
-                        if (@User.IsInRole("Admin"))
-                        {
-                            UserRoles = "Admin";
-                        }
-                        else
-                        {
-                            UserRoles = "Manager";
-                        }
-
-                        @if (menus.GetMenuMaster(@UserRoles).Any())
-                        {
                             @if (menus.GetMenuMaster(@UserRoles).Any())
                             {
-                                @foreach (var menuNames in menus.GetMenuMaster(@UserRoles).Where
-                                          (n => n.Parent_MenuID == "*"))
+                                <li class="nav navbar-nav navbar-light"><a style="color:whitesmoke" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                                @if (menus.GetMenuMaster(@UserRoles).Any())
                                 {
-                                    <li>
-                                        <a asp-area="" asp-controller=@menuNames.MenuURL
-                                           asp-action=@menuNames.MenuFileName>@menuNames.MenuName</a>
-                                        <ul class="sub-menu">
-                                            @foreach (var subMenu in menus.GetMenuMaster(@UserRoles).Where
-                                                   (n => n.Parent_MenuID == @menuNames.MenuID))
-                                            {
-                                                <li>
-                                                    <a asp-area="" asp-controller=@subMenu.MenuURL
-                                                       asp-action=@subMenu.MenuFileName>@subMenu.MenuName</a>
-                                                </li>
-                                            }
-                                        </ul>
-                                    </li>
+                                    @foreach (var menuNames in menus.GetMenuMaster(@UserRoles).Where
+                                            (n => n.Parent_MenuID == "*"))
+                                    {
+                                        <li class="nav navbar-nav navbar-light">
+                                            <a style="color:whitesmoke; padding-left:5px" asp-controller=@menuNames.MenuURL
+                                               asp-action=@menuNames.MenuFileName>@menuNames.MenuName</a>
+                                            <ul class="sub-menu">
+                                                @foreach (var subMenu in menus.GetMenuMaster(@UserRoles).Where
+                                                     (n => n.Parent_MenuID == @menuNames.MenuID))
+                                                {
+                                                    <li class="nav navbar-nav navbar-light">
+                                                        <a style="color:whitesmoke; padding-left:5px" asp-area="" asp-controller=@subMenu.MenuURL
+                                                           asp-action=@subMenu.MenuFileName>@subMenu.MenuName</a>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </li>
+                                    }
                                 }
                             }
                         }
-                    }
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    @*<header>
-            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-                <div class="container">
-                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">AviorCrewMgtCore</a>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                            aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                        <partial name="_LoginPartial" />
-                        <ul class="navbar-nav flex-grow-1">
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                            </li>
-                            @if (User.Identity.IsAuthenticated)
-                            {
-                                @if (User.IsInRole("Admin"))
-                                {
-                                    <li class="nav-item">
-                                        <a asp-area="" asp-controller="Admin" asp-action="Index">Admin Page</a>
-                                    </li>
-                                }
-                            }
-
-                        </ul>
-                    </div>
+                    </ul>
                 </div>
-            </nav>
-        </header>*@
+            </div>
+        </nav>
+    </header>
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -109,7 +71,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2020 - AviorCrewMgtCore - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2020 - WebApplication1 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -118,3 +80,4 @@
     @RenderSection("Scripts", required: false)
 </body>
 </html>
+
